@@ -4,3 +4,8 @@ menu:
 page:
 	title: Units
 	list: Unit list
+	newUnit: New unit
+
+form:
+	name: Name
+	shortcut: Shortcut

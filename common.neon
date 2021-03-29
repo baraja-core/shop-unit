@@ -4,7 +4,7 @@ parameters:
 			items:
 				units:
 					title: unit.menu.title
-					route: ':Admin:Setting:default'
+					route: ':Admin:Unit:default'
 					icon: 'fas fa-list-ol'
 					position: 0
 					rights:
@@ -12,3 +12,7 @@ parameters:
 
 services:
 	- MatiCore\Unit\UnitManager
+
+orm.annotations:
+	paths:
+		MatiCore\Unit: %appDir%/../vendor/mati-core/unit/src/Entity

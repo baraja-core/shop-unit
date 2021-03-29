@@ -1,5 +1,9 @@
 {block title}
-	Nová jednotka
+	{_unit.page.title} - {_cms.main.add}
+{/block}
+
+{block pageTitle}
+	<h1>{_unit.page.title} - {_cms.main.add}</h1>
 {/block}
 
 {block breadcrumb}
@@ -15,7 +19,7 @@
 			</a>
 		</li>
 		<li class="breadcrumb-item active">
-			{_cms.main.new}
+			{_cms.main.add}
 		</li>
 	</ol>
 {/block}
@@ -44,17 +48,17 @@
 					<!-- Default box -->
 					<div class="card">
 						<div class="card-header">
-							<h3 class="card-title">Nová jednotka</h3>
+							<h3 class="card-title">{_unit.page.newUnit}</h3>
 						</div>
 						<div class="card-body">
 							<div class="row">
 								<div class="col-lg-6 col-12">
 									<div class="form-group">
-										<label n:name="name">Název</label>
+										<label n:name="name">{_cms.main.name}</label>
 										<input n:name="name" class="form-control">
 									</div>
 									<div class="form-group">
-										<label n:name="shortcut">Zkratka</label>
+										<label n:name="shortcut">{_cms.main.shortcut}</label>
 										<input n:name="shortcut" class="form-control">
 									</div>
 								</div>

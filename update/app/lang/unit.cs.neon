@@ -4,3 +4,8 @@ menu:
 page:
 	title: Jednotky
 	list: Seznam jednotek
+	newUnit: Nová jednotka
+
+form:
+	name: Název
+	shortcut: Zkratka

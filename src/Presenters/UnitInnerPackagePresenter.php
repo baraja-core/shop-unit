@@ -7,6 +7,7 @@ namespace App\AdminModule\Presenters;
 use Baraja\Doctrine\EntityManagerException;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
+use MatiCore\DataGrid\MatiDataGrid;
 use MatiCore\Form\FormFactory;
 use MatiCore\Unit\Unit;
 use MatiCore\Unit\UnitException;
@@ -51,11 +52,11 @@ class UnitInnerPackagePresenter extends BaseAdminPresenter
 	 */
 	public function actionDetail(string $id): void
 	{
-		try{
+		try {
 			$this->editedUnit = $this->unitManager->getById($id);
 
 			$this->template->unit = $this->editedUnit;
-		}catch (NonUniqueResultException|NoResultException $e){
+		} catch (NonUniqueResultException | NoResultException $e) {
 			$this->flashMessage('Požadovaná jednotka neexistuje', 'error');
 			$this->redirect('default');
 		}
@@ -84,7 +85,7 @@ class UnitInnerPackagePresenter extends BaseAdminPresenter
 			$unit = $this->unitManager->getById($id);
 			$this->unitManager->setDefaultUnit($unit);
 			$this->flashMessage('Jednotka ' . $unit->getName() . ' byla nastavena jako výchozí.', 'success');
-		} catch (NoResultException|NonUniqueResultException $e) {
+		} catch (NoResultException | NonUniqueResultException $e) {
 			$this->flashMessage('Požadovaná jednotka neexistuje.', 'error');
 		} catch (EntityManagerException $e) {
 			Debugger::log($e);
@@ -105,7 +106,7 @@ class UnitInnerPackagePresenter extends BaseAdminPresenter
 			$unit = $this->unitManager->getById($id);
 			$this->unitManager->removeUnit($unit);
 			$this->flashMessage('Jednotka ' . $unit->getName() . ' byla odstraněna.', 'info');
-		} catch (NoResultException|NonUniqueResultException $e) {
+		} catch (NoResultException | NonUniqueResultException $e) {
 			$this->flashMessage('Požadovaná jednotka neexistuje.', 'error');
 		} catch (UnitException $e) {
 			Debugger::log($e);
@@ -134,12 +135,12 @@ class UnitInnerPackagePresenter extends BaseAdminPresenter
 		 * @param Form $form
 		 * @param ArrayHash $values
 		 */
-		$form->onSuccess[] = function (Form $form, ArrayHash $values): void{
-			try{
+		$form->onSuccess[] = function (Form $form, ArrayHash $values): void {
+			try {
 				$unit = $this->unitManager->createUnit($values->name, $values->shortcut);
 
 				$this->flashMessage('Jednotka byla úspěšně vytvořena.', 'success');
-			}catch (EntityManagerException $e){
+			} catch (EntityManagerException $e) {
 				$this->flashMessage('Chyba při ukládání do databáze.', 'error');
 			}
 
@@ -155,7 +156,7 @@ class UnitInnerPackagePresenter extends BaseAdminPresenter
 	 */
 	public function createComponentEditForm(): Form
 	{
-		if($this->editedUnit === null){
+		if ($this->editedUnit === null) {
 			throw new UnitException('Unit for edit is null!');
 		}
 
@@ -175,14 +176,14 @@ class UnitInnerPackagePresenter extends BaseAdminPresenter
 		 * @param Form $form
 		 * @param ArrayHash $values
 		 */
-		$form->onSuccess[] = function (Form $form, ArrayHash $values): void{
-			try{
+		$form->onSuccess[] = function (Form $form, ArrayHash $values): void {
+			try {
 				$this->editedUnit->setName($values->name);
 				$this->editedUnit->setShortcut($values->shortcut);
 
 				$this->entityManager->flush($this->editedUnit);
 				$this->flashMessage('Změny byly úspěšně uloženy.', 'success');
-			}catch (EntityManagerException $e){
+			} catch (EntityManagerException $e) {
 				$this->flashMessage('Chyba při ukládání do databáze.', 'error');
 			}
 
@@ -190,5 +191,66 @@ class UnitInnerPackagePresenter extends BaseAdminPresenter
 		};
 
 		return $form;
+	}
+
+	/**
+	 * @param string $name
+	 * @return MatiDataGrid
+	 */
+	public function createComponentUnitTable(string $name): MatiDataGrid
+	{
+		$grid = new MatiDataGrid($this, $name);
+
+		$grid->setDataSource(
+			$this->entityManager->getRepository(Unit::class)
+				->createQueryBuilder('unit')
+				->select('unit')
+				->orderBy('unit.name', 'ASC')
+		);
+
+		$grid->addColumnText('code', 'Kód')
+			->setFitContent();
+
+		$grid->addColumnText('name', 'Název')
+			->setRenderer(function (Unit $unit): string {
+				$link = $this->link('detail', ['id' => $unit->getId()]);
+				return '<a href="' . $link . '">' . $unit->getName() . '</a>';
+			})
+			->setTemplateEscaping(false);
+
+		$grid->addColumnText('shortcut', 'Jednotka')
+			->setFitContent();
+
+		$grid->addAction('default', 'Default')
+			->setRenderer(function (Unit $unit): string {
+				$link = $this->link('default!', ['id' => $unit->getId()]);
+
+				if($unit->isDefault() === true){
+					return '<a href="#" class="btn btn-xs btn-success ajax"><i class="fas fa-home fa-fw"></i></a>';
+				}
+
+				return '<a href="' . $link . '" class="btn btn-xs btn-outline-secondary ajax"><i class="fas fa-minus fa-fw"></i></a>';
+			})
+			->setTemplateEscaping(false);
+
+		$grid->addAction('edit', 'Upravit')
+			->setRenderer(function (Unit $unit): string {
+				$link = $this->link('detail', ['id' => $unit->getId()]);
+
+				return '<a href="' . $link . '" class="btn btn-xs btn-warning"><i class="fas fa-pen fa-fw"></i></a>';
+			})
+			->setTemplateEscaping(false);
+
+		$grid->addAction('delete', 'Smazat')
+			->setRenderer(function (Unit $unit): string {
+				$link = $this->link('delete!', ['id' => $unit->getId()]);
+
+				return '<a href="' . $link . '" class="btn btn-xs btn-danger" onclick="return confirm(\''
+					.$this->translator->translate('cms.main.deleteConfirm')
+					.'\');"><i class="fas fa-trash fa-fw"></i></a>';
+			})
+			->setTemplateEscaping(false);
+
+		return $grid;
 	}
 }
