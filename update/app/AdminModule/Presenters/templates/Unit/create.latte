@@ -1,0 +1,74 @@
+{block title}
+	Nová jednotka
+{/block}
+
+{block breadcrumb}
+	<ol class="breadcrumb float-sm-right">
+		<li class="breadcrumb-item">
+			<a n:href="Homepage:default">
+				<i class="fas fa-tachometer-alt"></i>
+			</a>
+		</li>
+		<li class="breadcrumb-item">
+			<a n:href="Unit:default">
+				{_unit.page.title}
+			</a>
+		</li>
+		<li class="breadcrumb-item active">
+			{_cms.main.new}
+		</li>
+	</ol>
+{/block}
+
+{block content}
+	<!-- Main content -->
+	<div class="container-fluid">
+		<!-- Small boxes (Stat box) -->
+
+		<form n:name="createForm" class="ajax">
+
+			<div class="row">
+				<div class="col-12 mb-3 text-right">
+					<a n:href="default" class="btn btn-sm btn-secondary">
+						<i class="fas fa-reply"></i>&nbsp;{_cms.main.back}
+					</a>
+					<button n:name="submit" class="btn btn-sm btn-success">
+						<i class="fas fa-plus"></i>&nbsp;{_cms.main.add}
+					</button>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-12">
+
+					<!-- Default box -->
+					<div class="card">
+						<div class="card-header">
+							<h3 class="card-title">Nová jednotka</h3>
+						</div>
+						<div class="card-body">
+							<div class="row">
+								<div class="col-lg-6 col-12">
+									<div class="form-group">
+										<label n:name="name">Název</label>
+										<input n:name="name" class="form-control">
+									</div>
+									<div class="form-group">
+										<label n:name="shortcut">Zkratka</label>
+										<input n:name="shortcut" class="form-control">
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- /.card-body -->
+					</div>
+					<!-- /.card -->
+
+				</div>
+			</div>
+			<!-- /.row -->
+
+		</form>
+	</div>
+	<!-- /.container-fluid -->
+{/block}

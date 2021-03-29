@@ -1,0 +1,14 @@
+parameters:
+	menu:
+		cmsMainSetting:
+			items:
+				units:
+					title: unit.menu.title
+					route: ':Admin:Setting:default'
+					icon: 'fas fa-list-ol'
+					position: 0
+					rights:
+						- cms__settings__units
+
+services:
+	- MatiCore\Unit\UnitManager

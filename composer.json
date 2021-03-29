@@ -1,0 +1,38 @@
+{
+	"name": "mati-core/unit",
+	"license": "MIT",
+	"description": "Units for MatiCore",
+	"homepage": "https://github.com/mati-core/unit",
+	"authors": [
+		{
+			"name": "Martin Olmr",
+			"homepage": "https://martinolmr.cz"
+		}
+	],
+	"require": {
+		"php": ">=8.0",
+		"nette/utils": "^3.0",
+		"mati-core/cms": "~1.0",
+		"mati-core/datagrid": "~1.0",
+		"mati-core/form": "~1.0"
+	},
+	"require-dev": {
+		"roave/security-advisories": "dev-master",
+		"nette/tester": "~2.0",
+		"tracy/tracy": "^2.3",
+		"phpstan/phpstan": "^0.12",
+		"phpstan/phpstan-nette": "^0.12.6"
+	},
+	"autoload": {
+		"classmap": [
+			"src/"
+		]
+	},
+	"minimum-stability": "stable",
+	"scripts": {
+		"phpstan": [
+			"vendor/bin/phpstan analyse src -c phpstan.neon --level 6 --no-progress"
+		],
+		"tester": "tester tests -s"
+	}
+}
