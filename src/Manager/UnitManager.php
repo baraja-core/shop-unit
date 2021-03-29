@@ -130,7 +130,7 @@ class UnitManager
 		$units = [];
 		foreach ($list as $unitData) {
 			$unit = new Unit($unitData[0], $unitData[1], $unitData[2]);
-			if ($unitData[2] === 1) {
+			if ($unitData[3] === 1) {
 				$unit->setDefault(true);
 			}
 
