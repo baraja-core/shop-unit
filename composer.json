@@ -12,7 +12,6 @@
 	"require": {
 		"php": ">=8.0",
 		"nette/utils": "^3.0",
-		"mati-core/cms": "~1.0",
 		"mati-core/datagrid": "~1.0",
 		"mati-core/form": "~1.0"
 	},

@@ -6,7 +6,7 @@ parameters:
 					title: unit.menu.title
 					route: ':Admin:Unit:default'
 					icon: 'fas fa-list-ol'
-					position: 0
+					position: 80
 					rights:
 						- cms__settings__units
 
