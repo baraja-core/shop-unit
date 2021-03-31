@@ -12,6 +12,7 @@ parameters:
 
 services:
 	- MatiCore\Unit\UnitManager
+	- MatiCore\User\UserManagerAccessor
 
 orm.annotations:
 	paths:

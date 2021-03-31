@@ -69,7 +69,6 @@ class UnitManager
 	/**
 	 * @param bool $retryCall
 	 * @return Unit
-	 * @throws EntityManagerException
 	 * @throws UnitException
 	 */
 	public function getDefaultUnit(bool $retryCall = false): Unit
