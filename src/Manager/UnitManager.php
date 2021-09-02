@@ -44,7 +44,7 @@ class UnitManager
 		$code = Strings::upper(Strings::webalize($shortcut));
 		$unit = new Unit($name, $code, $shortcut);
 
-		$this->entityManager->persist($unit)->flush($unit);
+		$this->entityManager->persist($unit)->getUnitOfWork()->commit($unit);
 
 		return $unit;
 	}
@@ -103,7 +103,7 @@ class UnitManager
 					}
 				}
 
-				$this->entityManager->flush($list);
+				$this->entityManager->getUnitOfWork()->commit($list);
 			}
 		}
 
@@ -138,7 +138,7 @@ class UnitManager
 			$units[] = $unit;
 		}
 
-		$this->entityManager->flush($units);
+		$this->entityManager->getUnitOfWork()->commit($units);
 	}
 
 	/**
@@ -209,7 +209,7 @@ class UnitManager
 			}
 		}
 
-		$this->entityManager->flush($list);
+		$this->entityManager->getUnitOfWork()->commit($list);
 	}
 
 	/**
