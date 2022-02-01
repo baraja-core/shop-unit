@@ -1,19 +1,2 @@
-parameters:
-	menu:
-		cmsMainSetting:
-			items:
-				units:
-					title: unit.menu.title
-					route: ':Admin:Unit:default'
-					icon: 'fas fa-list-ol'
-					position: 80
-					rights:
-						- cms__settings__units
-
-services:
-	- MatiCore\Unit\UnitManager
-	- MatiCore\Unit\UnitManagerAccessor
-
-orm.annotations:
-	paths:
-		MatiCore\Unit: %appDir%/../vendor/mati-core/unit/src/Entity
+extensions:
+	shopUnit: Baraja\Shop\Unit\UnitExtension

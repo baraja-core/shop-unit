@@ -2,49 +2,41 @@
 
 declare(strict_types=1);
 
-namespace App\AdminModule\Presenters;
+namespace Baraja\Shop\Unit;
 
+
+use Baraja\Doctrine\EntityManager;
 use Baraja\Doctrine\EntityManagerException;
+use Baraja\Shop\Entity\Unit\Unit;
+use Baraja\StructuredApi\BaseEndpoint;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
-use MatiCore\DataGrid\MatiDataGrid;
-use MatiCore\Form\FormFactory;
-use MatiCore\Unit\Unit;
-use MatiCore\Unit\UnitException;
-use MatiCore\Unit\UnitManager;
 use Nette\Application\AbortException;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
 use Tracy\Debugger;
 
-/**
- * Class UnitInnerPackagePresenter
- * @package App\AdminModule\Presenters
- */
-class UnitInnerPackagePresenter extends BaseAdminPresenter
+class UnitInnerPackageEndpoint extends BaseEndpoint
 {
-
-	/**
-	 * @var UnitManager
-	 * @inject
-	 */
-	public UnitManager $unitManager;
-
-	/**
-	 * @var FormFactory
-	 * @inject
-	 */
-	public FormFactory $formFactory;
-
-	/**
-	 * @var Unit|null
-	 */
 	private Unit|null $editedUnit;
+
+
+	public function __construct(
+		private UnitManager $unitManager,
+		private EntityManager $entityManager,
+	) {
+	}
+
 
 	public function actionDefault(): void
 	{
-		$this->template->units = $this->unitManager->getUnits();
+		$this->sendJson(
+			[
+				'units' => $this->unitManager->getUnits(),
+			]
+		);
 	}
+
 
 	/**
 	 * @param string $id
@@ -62,6 +54,7 @@ class UnitInnerPackagePresenter extends BaseAdminPresenter
 		}
 	}
 
+
 	public function handleInstall(): void
 	{
 		try {
@@ -75,6 +68,7 @@ class UnitInnerPackagePresenter extends BaseAdminPresenter
 
 		$this->redirect('default');
 	}
+
 
 	/**
 	 * @param string $id
@@ -96,6 +90,7 @@ class UnitInnerPackagePresenter extends BaseAdminPresenter
 		$this->redrawControl('unit-list');
 	}
 
+
 	/**
 	 * @param string $id
 	 * @throws AbortException
@@ -116,6 +111,7 @@ class UnitInnerPackagePresenter extends BaseAdminPresenter
 		$this->redirect('default');
 	}
 
+
 	/**
 	 * @return Form
 	 */
@@ -135,7 +131,8 @@ class UnitInnerPackagePresenter extends BaseAdminPresenter
 		 * @param Form $form
 		 * @param ArrayHash $values
 		 */
-		$form->onSuccess[] = function (Form $form, ArrayHash $values): void {
+		$form->onSuccess[] = function (Form $form, ArrayHash $values): void
+		{
 			try {
 				$unit = $this->unitManager->createUnit($values->name, $values->shortcut);
 
@@ -150,9 +147,9 @@ class UnitInnerPackagePresenter extends BaseAdminPresenter
 		return $form;
 	}
 
+
 	/**
 	 * @return Form
-	 * @throws UnitException
 	 */
 	public function createComponentEditForm(): Form
 	{
@@ -176,7 +173,8 @@ class UnitInnerPackagePresenter extends BaseAdminPresenter
 		 * @param Form $form
 		 * @param ArrayHash $values
 		 */
-		$form->onSuccess[] = function (Form $form, ArrayHash $values): void {
+		$form->onSuccess[] = function (Form $form, ArrayHash $values): void
+		{
 			try {
 				$this->editedUnit->setName($values->name);
 				$this->editedUnit->setShortcut($values->shortcut);
@@ -192,6 +190,7 @@ class UnitInnerPackagePresenter extends BaseAdminPresenter
 
 		return $form;
 	}
+
 
 	/**
 	 * @param string $name
@@ -212,43 +211,56 @@ class UnitInnerPackagePresenter extends BaseAdminPresenter
 			->setFitContent();
 
 		$grid->addColumnText('name', 'Název')
-			->setRenderer(function (Unit $unit): string {
-				$link = $this->link('detail', ['id' => $unit->getId()]);
-				return '<a href="' . $link . '">' . $unit->getName() . '</a>';
-			})
+			->setRenderer(
+				function (Unit $unit): string
+				{
+					$link = $this->link('detail', ['id' => $unit->getId()]);
+
+					return '<a href="' . $link . '">' . $unit->getName() . '</a>';
+				}
+			)
 			->setTemplateEscaping(false);
 
 		$grid->addColumnText('shortcut', 'Jednotka')
 			->setFitContent();
 
 		$grid->addAction('default', 'Default')
-			->setRenderer(function (Unit $unit): string {
-				$link = $this->link('default!', ['id' => $unit->getId()]);
+			->setRenderer(
+				function (Unit $unit): string
+				{
+					$link = $this->link('default!', ['id' => $unit->getId()]);
 
-				if($unit->isDefault() === true){
-					return '<a href="#" class="btn btn-xs btn-success ajax"><i class="fas fa-home fa-fw"></i></a>';
+					if ($unit->isDefault() === true) {
+						return '<a href="#" class="btn btn-xs btn-success ajax"><i class="fas fa-home fa-fw"></i></a>';
+					}
+
+					return '<a href="' . $link . '" class="btn btn-xs btn-outline-secondary ajax"><i class="fas fa-minus fa-fw"></i></a>';
 				}
-
-				return '<a href="' . $link . '" class="btn btn-xs btn-outline-secondary ajax"><i class="fas fa-minus fa-fw"></i></a>';
-			})
+			)
 			->setTemplateEscaping(false);
 
 		$grid->addAction('edit', 'Upravit')
-			->setRenderer(function (Unit $unit): string {
-				$link = $this->link('detail', ['id' => $unit->getId()]);
+			->setRenderer(
+				function (Unit $unit): string
+				{
+					$link = $this->link('detail', ['id' => $unit->getId()]);
 
-				return '<a href="' . $link . '" class="btn btn-xs btn-warning"><i class="fas fa-pen fa-fw"></i></a>';
-			})
+					return '<a href="' . $link . '" class="btn btn-xs btn-warning"><i class="fas fa-pen fa-fw"></i></a>';
+				}
+			)
 			->setTemplateEscaping(false);
 
 		$grid->addAction('delete', 'Smazat')
-			->setRenderer(function (Unit $unit): string {
-				$link = $this->link('delete!', ['id' => $unit->getId()]);
+			->setRenderer(
+				function (Unit $unit): string
+				{
+					$link = $this->link('delete!', ['id' => $unit->getId()]);
 
-				return '<a href="' . $link . '" class="btn btn-xs btn-danger" onclick="return confirm(\''
-					.$this->translator->translate('cms.main.deleteConfirm')
-					.'\');"><i class="fas fa-trash fa-fw"></i></a>';
-			})
+					return '<a href="' . $link . '" class="btn btn-xs btn-danger" onclick="return confirm(\''
+						. $this->translator->translate('cms.main.deleteConfirm')
+						. '\');"><i class="fas fa-trash fa-fw"></i></a>';
+				}
+			)
 			->setTemplateEscaping(false);
 
 		return $grid;

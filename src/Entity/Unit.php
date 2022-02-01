@@ -2,125 +2,95 @@
 
 declare(strict_types=1);
 
+namespace Baraja\Shop\Entity\Unit;
 
-namespace MatiCore\Unit;
 
-
-use Baraja\Doctrine\UUID\UuidIdentifier;
+use Baraja\Doctrine\Identifier\IdentifierUnsigned;
 use Doctrine\ORM\Mapping as ORM;
-use Nette\SmartObject;
+use Nette\Utils\Strings;
 
-/**
- * Class Unit
- * @package App\Model
- * @ORM\Entity()
- * @ORM\Table(name="app__unit")
- */
+#[ORM\Entity]
+#[ORM\Table(name: 'shop__unit')]
 class Unit
 {
+	use IdentifierUnsigned;
 
-	use SmartObject;
-	use UuidIdentifier;
+	public const DEFAULT_LIST = [
+		['Kilometr', 'KM', 'km', 0],
+		['Kilogram', 'KG', 'kg', 0],
+		['Gram', 'G', 'g', 0],
+		['Litr', 'L', 'l', 0],
+		['Metr', 'M', 'm', 0],
+		['Milimetr', 'MM', 'mm', 0],
+		['Hodiny', 'HOD', 'hod', 0],
+		['Kusy', 'KS', 'ks', 1],
+	];
 
-	/**
-	 * @var string
-	 * @ORM\Column(type="string", unique=true)
-	 */
+	#[ORM\Column(type: 'string', length: 6, unique: true)]
 	private string $code;
 
-	/**
-	 * @var string
-	 * @ORM\Column(type="string")
-	 */
+	#[ORM\Column(type: 'string')]
 	private string $name;
 
-	/**
-	 * @var string
-	 * @ORM\Column(type="string")
-	 */
+	#[ORM\Column(type: 'string', length: 6)]
 	private string $shortcut;
 
-	/**
-	 * @var bool
-	 * @ORM\Column(type="boolean", name="is_default")
-	 */
+	#[ORM\Column(name: 'is_default', type: 'boolean')]
 	private bool $default = false;
 
-	/**
-	 * Unit constructor.
-	 * @param string $name
-	 * @param string $code
-	 * @param string $shortcut
-	 */
+
 	public function __construct(string $name, string $code, string $shortcut)
 	{
-		$this->name = $name;
-		$this->code = $code;
-		$this->shortcut = $shortcut;
+		$this->setName($name);
+		$this->setCode($code);
+		$this->setShortcut($shortcut);
 	}
 
-	/**
-	 * @return string
-	 */
+
 	public function getCode(): string
 	{
 		return $this->code;
 	}
 
-	/**
-	 * @param string $code
-	 */
+
 	public function setCode(string $code): void
 	{
-		$this->code = $code;
+		$this->code = Strings::upper(Strings::webalize($code));
 	}
 
-	/**
-	 * @return string
-	 */
+
 	public function getName(): string
 	{
 		return $this->name;
 	}
 
-	/**
-	 * @param string $name
-	 */
+
 	public function setName(string $name): void
 	{
 		$this->name = $name;
 	}
 
-	/**
-	 * @return string
-	 */
+
 	public function getShortcut(): string
 	{
 		return $this->shortcut;
 	}
 
-	/**
-	 * @param string $shortcut
-	 */
+
 	public function setShortcut(string $shortcut): void
 	{
 		$this->shortcut = $shortcut;
 	}
 
-	/**
-	 * @return bool
-	 */
+
 	public function isDefault(): bool
 	{
 		return $this->default;
 	}
 
-	/**
-	 * @param bool $default
-	 */
+
 	public function setDefault(bool $default): void
 	{
 		$this->default = $default;
 	}
-
 }
