@@ -33,7 +33,7 @@ class UnitInnerPackageEndpoint extends BaseEndpoint
 		$this->sendJson(
 			[
 				'units' => $this->unitManager->getUnits(),
-			]
+			],
 		);
 	}
 
@@ -70,9 +70,6 @@ class UnitInnerPackageEndpoint extends BaseEndpoint
 	}
 
 
-	/**
-	 * @param string $id
-	 */
 	public function handleDefault(string $id): void
 	{
 		try {
@@ -112,9 +109,6 @@ class UnitInnerPackageEndpoint extends BaseEndpoint
 	}
 
 
-	/**
-	 * @return Form
-	 */
 	public function createComponentCreateForm(): Form
 	{
 		$form = $this->formFactory->create();
@@ -131,8 +125,7 @@ class UnitInnerPackageEndpoint extends BaseEndpoint
 		 * @param Form $form
 		 * @param ArrayHash $values
 		 */
-		$form->onSuccess[] = function (Form $form, ArrayHash $values): void
-		{
+		$form->onSuccess[] = function (Form $form, ArrayHash $values): void {
 			try {
 				$unit = $this->unitManager->createUnit($values->name, $values->shortcut);
 
@@ -148,9 +141,6 @@ class UnitInnerPackageEndpoint extends BaseEndpoint
 	}
 
 
-	/**
-	 * @return Form
-	 */
 	public function createComponentEditForm(): Form
 	{
 		if ($this->editedUnit === null) {
@@ -173,8 +163,7 @@ class UnitInnerPackageEndpoint extends BaseEndpoint
 		 * @param Form $form
 		 * @param ArrayHash $values
 		 */
-		$form->onSuccess[] = function (Form $form, ArrayHash $values): void
-		{
+		$form->onSuccess[] = function (Form $form, ArrayHash $values): void {
 			try {
 				$this->editedUnit->setName($values->name);
 				$this->editedUnit->setShortcut($values->shortcut);
@@ -192,10 +181,6 @@ class UnitInnerPackageEndpoint extends BaseEndpoint
 	}
 
 
-	/**
-	 * @param string $name
-	 * @return MatiDataGrid
-	 */
 	public function createComponentUnitTable(string $name): MatiDataGrid
 	{
 		$grid = new MatiDataGrid($this, $name);
@@ -204,7 +189,7 @@ class UnitInnerPackageEndpoint extends BaseEndpoint
 			$this->entityManager->getRepository(Unit::class)
 				->createQueryBuilder('unit')
 				->select('unit')
-				->orderBy('unit.name', 'ASC')
+				->orderBy('unit.name', 'ASC'),
 		);
 
 		$grid->addColumnText('code', 'Kód')
@@ -212,12 +197,11 @@ class UnitInnerPackageEndpoint extends BaseEndpoint
 
 		$grid->addColumnText('name', 'Název')
 			->setRenderer(
-				function (Unit $unit): string
-				{
+				function (Unit $unit): string {
 					$link = $this->link('detail', ['id' => $unit->getId()]);
 
 					return '<a href="' . $link . '">' . $unit->getName() . '</a>';
-				}
+				},
 			)
 			->setTemplateEscaping(false);
 
@@ -226,8 +210,7 @@ class UnitInnerPackageEndpoint extends BaseEndpoint
 
 		$grid->addAction('default', 'Default')
 			->setRenderer(
-				function (Unit $unit): string
-				{
+				function (Unit $unit): string {
 					$link = $this->link('default!', ['id' => $unit->getId()]);
 
 					if ($unit->isDefault() === true) {
@@ -235,31 +218,29 @@ class UnitInnerPackageEndpoint extends BaseEndpoint
 					}
 
 					return '<a href="' . $link . '" class="btn btn-xs btn-outline-secondary ajax"><i class="fas fa-minus fa-fw"></i></a>';
-				}
+				},
 			)
 			->setTemplateEscaping(false);
 
 		$grid->addAction('edit', 'Upravit')
 			->setRenderer(
-				function (Unit $unit): string
-				{
+				function (Unit $unit): string {
 					$link = $this->link('detail', ['id' => $unit->getId()]);
 
 					return '<a href="' . $link . '" class="btn btn-xs btn-warning"><i class="fas fa-pen fa-fw"></i></a>';
-				}
+				},
 			)
 			->setTemplateEscaping(false);
 
 		$grid->addAction('delete', 'Smazat')
 			->setRenderer(
-				function (Unit $unit): string
-				{
+				function (Unit $unit): string {
 					$link = $this->link('delete!', ['id' => $unit->getId()]);
 
 					return '<a href="' . $link . '" class="btn btn-xs btn-danger" onclick="return confirm(\''
 						. $this->translator->translate('cms.main.deleteConfirm')
 						. '\');"><i class="fas fa-trash fa-fw"></i></a>';
-				}
+				},
 			)
 			->setTemplateEscaping(false);
 

@@ -57,7 +57,7 @@ class UnitManager
 			} catch (NoResultException) {
 				if ($retryCall === true) {
 					throw new \LogicException(
-						'V systému neexistuje žádná jednotka. Automatická instalace se nezdařila.'
+						'V systému neexistuje žádná jednotka. Automatická instalace se nezdařila.',
 					);
 				}
 				$this->installUnits();
